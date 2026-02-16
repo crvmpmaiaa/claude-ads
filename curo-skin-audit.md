@@ -2,7 +2,7 @@
 
 **Brand:** Curo Skin (curoskin.co.uk)
 **Industry:** E-commerce DTC — Shower Filters
-**Monthly Spend:** ~£18,000
+**Monthly Spend:** ~£13,000 (~$18,000 USD)
 **Active Ads:** ~30 (across a small number of campaigns)
 **Conversion Goal:** Purchases
 **Platforms Audited:** Meta Ads, Google Ads
@@ -14,8 +14,8 @@
 
 | Platform | Score | Grade | Budget Share |
 |----------|-------|-------|--------------|
-| **Meta Ads** | **52/100** | **D** | ~68% (~£12.3k) |
-| **Google Ads** | **61/100** | **C** | ~32% (~£5.7k) |
+| **Meta Ads** | **50/100** | **D** | ~56% (~£7.3k) |
+| **Google Ads** | **61/100** | **C** | ~44% (~£5.7k) |
 | **Aggregate** | **55/100** | **D** | 100% |
 
 **Verdict: Significant problems present — urgent intervention required on Meta tracking foundation, with PMax asset and spend visibility issues on Google.**
@@ -24,7 +24,7 @@
 
 ## Executive Summary
 
-Curo Skin is spending £18k/month across Meta and Google Ads for a shower filter DTC brand. The core issues are:
+Curo Skin is spending ~£13k/month ($18k USD) across Meta and Google Ads for a shower filter DTC brand. The core issues are:
 
 1. **Meta tracking is broken** — EMQ scores range from 4.5 to 6.4/10 with "multiple integrations" flagged on every event, suggesting deduplication failures and severe signal loss. This undermines all Meta optimization.
 2. **Google PMax is consuming 84.5% of spend** with campaigns labeled "No Asset" — suggesting incomplete asset groups feeding low-quality placements across Display/YouTube/Discover with limited creative.
@@ -84,23 +84,25 @@ Your Events Manager is receiving the same events from multiple sources (likely b
 - Test carousel format if not already active (strong for product education — before/after, multi-benefit)
 - Monitor frequency in the scaling campaign — broad winners can fatigue quickly once scaled
 
-### 1.3 Account Structure (20% weight) — Score: 72/100 [NEEDS IMPROVEMENT]
+### 1.3 Account Structure (20% weight) — Score: 58/100 [POOR]
 
 | ID | Check | Result | Finding |
 |----|-------|--------|---------|
 | M11 | Campaign count | PASS | 2 campaigns — clean and well within the 5-campaign limit |
-| M12 | CBO vs ABO | WARNING | Need to verify. At ~£12k/month Meta spend, CBO on scaling + ABO on testing would be ideal. |
-| M13 | Learning phase | WARNING | With 5 ad sets and ~£12k budget, each ad set gets ~£80/day. If target CPA is ~£30, that's ~2.7x CPA per ad set — below the 5x minimum for reliable learning. |
+| M12 | CBO vs ABO | WARNING | Need to verify. At ~£7.3k/month Meta spend, CBO on scaling + ABO on testing would be ideal. |
+| M13 | Learning phase | FAIL | With 5 ad sets and ~£7.3k budget, each ad set gets only ~£49/day. If target CPA is ~£30-40, each ad set needs 5× CPA = £150-200/day. **At £49/day you're at ~1.3-1.6x CPA — severely below the 5x minimum.** Almost certainly stuck in "Learning Limited." |
 | M15 | Advantage+ Sales | WARNING | No ASC mentioned. For e-commerce with purchase optimization, ASC typically delivers 4.52x ROAS (highest Meta benchmark). Should be tested. |
 | M16 | Ad set overlap | WARNING | "Broad statics", "broad reels", "broad UGC" all target broad — likely significant audience overlap between these ad sets |
 | M18 | Objective alignment | PASS | Assuming Sales/Purchase objective for a purchase conversion goal |
 | M23 | Purchaser exclusions | UNVERIFIED | Critical: are purchasers excluded from the testing campaign? Without this, you're paying to convert existing customers. |
 
-**Key Concern — Budget Sufficiency:**
-With ~£12k/month across 5 ad sets = ~£2,400/ad set/month = ~£80/day per ad set. If your CPA is ~£30-40, each ad set needs 5× CPA = £150-200/day to reliably exit learning phase. **Your ad sets are likely stuck in "Learning Limited."**
+**Key Concern — Budget Sufficiency (CRITICAL):**
+With ~£7.3k/month across 5 ad sets = ~£1,460/ad set/month = **~£49/day per ad set.** If your CPA is ~£30-40, each ad set needs 5× CPA = £150-200/day to reliably exit learning phase. At £49/day, you're at barely 1.3× CPA — **severely below the 5× minimum.** Your ad sets are almost certainly stuck in "Learning Limited," meaning Meta's algorithm never gets enough data to properly optimize.
+
+**This is a bigger problem than it looks.** With broken tracking (EMQ 4.5-6.4) AND insufficient budget per ad set, Meta is getting bad signal AND not enough of it. The algorithm is doubly handicapped.
 
 **Recommendations:**
-- Consolidate to 3 ad sets maximum (merge broad statics + broad reels into one ad set with mixed creative)
+- Consolidate to **2-3 ad sets maximum** (merge broad statics + broad reels into one ad set with mixed creative) to get each ad set to ~£73-122/day
 - Test Advantage+ Sales Campaign alongside your manual structure — it typically outperforms for e-commerce
 - Verify purchaser exclusions on prospecting campaigns
 
@@ -277,17 +279,18 @@ Relevant terms: shower filter, filtered shower head, curo shower head, shower he
 **Current Split (Estimated):**
 | Platform | Monthly Spend | Share | Benchmark (E-com DTC) |
 |----------|--------------|-------|----------------------|
-| Meta | ~£12,300 | ~68% | 50-68% | PASS |
-| Google | ~£5,700 | ~32% | 23-30% | PASS (slightly high) |
+| Meta | ~£7,300 | ~56% | 50-68% | PASS |
+| Google | ~£5,700 | ~44% | 23-30% | WARNING (Google-heavy) |
 | TikTok | £0 | 0% | 5-15% | Not active |
 
-The platform split broadly aligns with e-commerce DTC benchmarks. However:
+The Meta share (56%) is within the recommended range but on the lower end. Google at 44% is notably above the 23-30% benchmark for e-commerce DTC. Given that Google ROAS is only 2.11x and 84.5% of that spend goes to opaque PMax cross-network, **consider shifting 10-15% of budget from Google PMax to Meta** once tracking is fixed.
 
 **MER (Marketing Efficiency Ratio):**
 - Google reported: £11,971 conv value / £5,677 spend = 2.11x
 - Need Meta revenue data to calculate true MER
+- Total monthly spend: ~£13k. If total revenue attributable to ads is ~£20-25k, MER would be 1.5-1.9x
 - E-commerce healthy MER target: 3.0-5.0x
-- If Google is at 2.11x and Meta tracking is broken (inflating reported numbers), **true MER is likely below 2.0x — Danger Zone.**
+- **True MER is likely below 2.0x — Danger Zone.** This is especially concerning given Meta's tracking issues likely inflate reported numbers.
 
 ### 3.2 Campaign Structure
 
@@ -322,7 +325,7 @@ Your Google Ads prominently feature "Use code PREORDER at checkout." If the prod
 
 | # | Action | Platform | Impact | Time |
 |---|--------|----------|--------|------|
-| 6 | **Consolidate Meta ad sets to 3 max** — Merge "broad statics" and "broad reels" into one ad set with mixed creative. Budget per ad set needs to be ≥5x CPA (≥£150-200/day). | Meta | Exits Learning Limited, improves algorithm efficiency | 1 hour |
+| 6 | **Consolidate Meta ad sets to 2-3 max** — At £7.3k/month with 5 ad sets, each gets only ~£49/day (needs £150-200). Merge "broad statics" and "broad reels" into one ad set. With 3 ad sets: ~£81/day. With 2: ~£122/day. Still tight — consider 2 ad sets. | Meta | Exits Learning Limited, improves algorithm efficiency | 1 hour |
 | 7 | **Test Advantage+ Sales Campaign** — ASC delivers 4.52x ROAS on average for e-commerce. Set up alongside existing campaigns with 20% of Meta budget. | Meta | Potential 2x ROAS improvement | 1 hour |
 | 8 | **Review PMax budget allocation** — With 84.5% of Google spend on cross-network, consider capping PMax budget or shifting more spend to high-performing Search campaigns where you have visibility and 2.97% CVR. | Google | Better spend control, improved ROAS | 1 hour |
 | 9 | **Verify Consent Mode v2** — UK business serving UK customers. Without Consent Mode, you're losing 30-50% of conversion data from cookie decliners. | Google | Recovers 30-50% lost conversion data | 1-2 hours |
@@ -354,15 +357,15 @@ Your Google Ads prominently feature "Use code PREORDER at checkout." If the prod
 
 ## PART 5: DETAILED SCORING BREAKDOWN
 
-### Meta Ads Score: 52/100 (Grade D)
+### Meta Ads Score: 50/100 (Grade D)
 
 | Category | Weight | Score | Weighted |
 |----------|--------|-------|----------|
 | Pixel / CAPI Health | 30% | 35/100 | 10.5 |
 | Creative (Diversity & Fatigue) | 30% | 78/100 | 23.4 |
-| Account Structure | 20% | 62/100 | 12.4 |
+| Account Structure | 20% | 58/100 | 11.6 |
 | Audience & Targeting | 20% | 45/100 | 9.0 |
-| **Total** | **100%** | — | **55.3 → 52** |
+| **Total** | **100%** | — | **54.5 → 50** |
 
 **Drag Factor:** Pixel/CAPI health at 35/100 is tanking the overall score. Fix tracking and this account could jump to Grade B (75+) relatively quickly given the solid creative structure.
 
@@ -383,8 +386,8 @@ Your Google Ads prominently feature "Use code PREORDER at checkout." If the prod
 ### Aggregate Score: 55/100 (Grade D)
 
 ```
-Aggregate = Meta (52) × 68% + Google (61) × 32%
-         = 35.4 + 19.5 = 54.9 → 55
+Aggregate = Meta (50) × 56% + Google (61) × 44%
+         = 28.0 + 26.8 = 54.8 → 55
 ```
 
 ---
@@ -400,7 +403,7 @@ Not everything is broken. These are genuine strengths to build on:
 5. **Naming convention** — Consistent campaign naming makes account management scalable.
 6. **Non-brand Search CTR** — 6.12% on generic keywords beats the 4.13% e-commerce benchmark by 48%.
 7. **CPC is competitive** — £1.09 in a niche with relatively low competition.
-8. **Platform budget split** — 68/32 Meta/Google is right in the recommended range for e-commerce DTC.
+8. **Platform budget split** — 56/44 Meta/Google is reasonable, though Google is slightly over-indexed. Once Meta tracking is fixed, consider shifting some PMax budget to Meta.
 
 ---
 
