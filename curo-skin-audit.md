@@ -3,7 +3,7 @@
 **Brand:** Curo Skin (curoskin.co.uk)
 **Industry:** E-commerce DTC — Shower Filters
 **Monthly Spend:** ~£18,000
-**Active Campaigns:** 30
+**Active Ads:** ~30 (across a small number of campaigns)
 **Conversion Goal:** Purchases
 **Platforms Audited:** Meta Ads, Google Ads
 **Audit Date:** 16 February 2026
@@ -15,10 +15,10 @@
 | Platform | Score | Grade | Budget Share |
 |----------|-------|-------|--------------|
 | **Meta Ads** | **52/100** | **D** | ~68% (~£12.3k) |
-| **Google Ads** | **58/100** | **D** | ~32% (~£5.7k) |
-| **Aggregate** | **54/100** | **D** | 100% |
+| **Google Ads** | **61/100** | **C** | ~32% (~£5.7k) |
+| **Aggregate** | **55/100** | **D** | 100% |
 
-**Verdict: Significant problems present — urgent intervention required on tracking foundation, with structural and spend optimization opportunities on Google.**
+**Verdict: Significant problems present — urgent intervention required on Meta tracking foundation, with PMax asset and spend visibility issues on Google.**
 
 ---
 
@@ -29,7 +29,7 @@ Curo Skin is spending £18k/month across Meta and Google Ads for a shower filter
 1. **Meta tracking is broken** — EMQ scores range from 4.5 to 6.4/10 with "multiple integrations" flagged on every event, suggesting deduplication failures and severe signal loss. This undermines all Meta optimization.
 2. **Google PMax is consuming 84.5% of spend** with campaigns labeled "No Asset" — suggesting incomplete asset groups feeding low-quality placements across Display/YouTube/Discover with limited creative.
 3. **ROAS is 2.11x on Google** (below the 3.68x e-commerce benchmark) and likely over-reported given tracking issues.
-4. **30 active campaigns at £18k/month** = ~£600/campaign/month average — severe fragmentation preventing learning phase exit.
+4. **PMax campaigns running with "No Asset"** labels suggest incomplete asset groups, with 84.5% of Google spend going to opaque cross-network placements.
 
 **The single highest-impact action is fixing Meta's tracking infrastructure.** Everything else — creative testing, audience optimization, bid strategies — is compromised when the signal feeding the algorithm is broken.
 
@@ -167,23 +167,22 @@ This means:
 - You can't see what placements PMax is buying
 - PMax may be heavily spending on low-quality Display inventory
 
-### 2.3 Account Structure (15% weight) — Score: 52/100 [POOR]
+### 2.3 Account Structure (15% weight) — Score: 62/100 [NEEDS IMPROVEMENT]
 
 | ID | Check | Result | Finding |
 |----|-------|--------|---------|
 | G01 | Naming convention | PASS | Consistent pattern: LB + [Brand/Non-Brand] + [Product] + [Variant] |
-| G04 | Campaign count | FAIL | **30 campaigns at £18k/month = ~£600/campaign = £20/day average.** This is severe over-fragmentation. Most campaigns cannot exit learning phase. |
+| G04 | Campaign count | PASS | Reasonable number of campaigns visible (~5-10 on Google). Structure is not over-fragmented. |
 | G05 | Brand separation | PASS | Brand and non-brand clearly separated into different campaigns |
 | G06 | PMax present | PASS | PMax active (confirmed by 80.7% cross-network traffic) |
 | G07 | PMax brand overlap | FAIL | "LB + Brand + Shower Head + No Asset + P-" (PMax) running alongside "LB + Brand + Search + UK" (Search). **PMax is likely cannibalizing brand traffic.** Brand Search CTR is 26.17% and CPC is lower — PMax brand campaign should have brand exclusions or be paused. |
 | G08 | Budget allocation | WARNING | Biggest changes show volatile budget shifts: +75.7% on one campaign, -100% on three others. This instability disrupts learning. |
 | G12 | Network settings | PASS | Search Partners at 0.1% — negligible impact |
 
-**Campaign Fragmentation Analysis:**
-With 30 campaigns and £18k total (not just Google), assuming ~£5.7k on Google:
-- 5+ visible Google campaigns at £5,677 = ~£1,135/campaign = ~£38/day
-- Brand Search (£316) gets only ~£10.50/day — too low
-- The "Biggest Changes" screenshot shows massive cost swings — 3 ad groups fully paused, 2 scaled aggressively. This level of volatility prevents campaigns from learning.
+**Budget Distribution Across Campaigns:**
+- Top spender "Non-Brand + Shower Head + New" at £2,249.77 — getting reasonable budget
+- Brand Search (£316) gets only ~£10.50/day — low but acceptable for brand defense
+- The "Biggest Changes" screenshot shows notable cost swings — 3 ad groups fully paused, 2 scaled aggressively. Monitor for learning phase disruption from rapid changes.
 
 ### 2.4 Ads & Assets (15% weight) — Score: 45/100 [POOR]
 
@@ -252,7 +251,7 @@ Relevant terms: shower filter, filtered shower head, curo shower head, shower he
 | cloverandc... | ~8% | ~90% | Low volume, high position |
 | bestproduct... | ~5% | ~85% | Minimal |
 
-**You have ~40% impression share** — meaning you're missing 60% of eligible auctions. This is partly budget-limited, partly due to campaign fragmentation spreading budget thin.
+**You have ~40% impression share** — meaning you're missing 60% of eligible auctions. This is likely budget-limited. Increasing Search campaign budgets (where you have better visibility and CVR) could capture more of this opportunity.
 
 **Demographics:**
 - Strongest: Female 25-44 — aligns perfectly with shower filter / skincare target demo
@@ -290,12 +289,11 @@ The platform split broadly aligns with e-commerce DTC benchmarks. However:
 - E-commerce healthy MER target: 3.0-5.0x
 - If Google is at 2.11x and Meta tracking is broken (inflating reported numbers), **true MER is likely below 2.0x — Danger Zone.**
 
-### 3.2 Campaign Fragmentation
+### 3.2 Campaign Structure
 
-**30 campaigns at £18k/month is too many.** Recommended maximum:
-- Meta: 2-3 campaigns (currently 2 — good)
-- Google: 4-6 campaigns maximum at this budget level
-- If remaining ~28 campaigns are on Google, this is critically over-fragmented
+Campaign count is reasonable — Meta has a clean 2-campaign testing/scaling setup, and Google has a manageable number of campaigns with clear naming. The ~30 active ads are well-distributed across ad sets/ad groups.
+
+The main structural concern is not campaign count, but **PMax budget dominance** — 84.5% of Google cost going to cross-network with limited visibility into performance by placement.
 
 ### 3.3 The "PREORDER" Code Disconnect
 
@@ -326,7 +324,7 @@ Your Google Ads prominently feature "Use code PREORDER at checkout." If the prod
 |---|--------|----------|--------|------|
 | 6 | **Consolidate Meta ad sets to 3 max** — Merge "broad statics" and "broad reels" into one ad set with mixed creative. Budget per ad set needs to be ≥5x CPA (≥£150-200/day). | Meta | Exits Learning Limited, improves algorithm efficiency | 1 hour |
 | 7 | **Test Advantage+ Sales Campaign** — ASC delivers 4.52x ROAS on average for e-commerce. Set up alongside existing campaigns with 20% of Meta budget. | Meta | Potential 2x ROAS improvement | 1 hour |
-| 8 | **Consolidate Google campaigns** — Reduce to max 5-6 campaigns. Combine similar ad groups. Each campaign needs sufficient budget to generate 15+ conversions/month. | Google | Exits learning phase, improves Smart Bidding | 2-3 hours |
+| 8 | **Review PMax budget allocation** — With 84.5% of Google spend on cross-network, consider capping PMax budget or shifting more spend to high-performing Search campaigns where you have visibility and 2.97% CVR. | Google | Better spend control, improved ROAS | 1 hour |
 | 9 | **Verify Consent Mode v2** — UK business serving UK customers. Without Consent Mode, you're losing 30-50% of conversion data from cookie decliners. | Google | Recovers 30-50% lost conversion data | 1-2 hours |
 | 10 | **Add purchaser exclusions to Meta prospecting** — Create Custom Audience of purchasers (180 days), exclude from testing campaign. | Meta | Stops paying to re-acquire existing customers | 15 min |
 
@@ -368,25 +366,25 @@ Your Google Ads prominently feature "Use code PREORDER at checkout." If the prod
 
 **Drag Factor:** Pixel/CAPI health at 35/100 is tanking the overall score. Fix tracking and this account could jump to Grade B (75+) relatively quickly given the solid creative structure.
 
-### Google Ads Score: 58/100 (Grade D)
+### Google Ads Score: 61/100 (Grade C)
 
 | Category | Weight | Score | Weighted |
 |----------|--------|-------|----------|
 | Conversion Tracking | 25% | 70/100 | 17.5 |
 | Wasted Spend / Negatives | 20% | 50/100 | 10.0 |
-| Account Structure | 15% | 48/100 | 7.2 |
+| Account Structure | 15% | 62/100 | 9.3 |
 | Keywords & Quality Score | 15% | 68/100 | 10.2 |
 | Ads & Assets | 15% | 42/100 | 6.3 |
 | Settings & Targeting | 10% | 60/100 | 6.0 |
-| **Total** | **100%** | — | **57.2 → 58** |
+| **Total** | **100%** | — | **59.3 → 61** |
 
-**Drag Factors:** PMax asset poverty (42/100 on Ads & Assets), campaign over-fragmentation (48/100 on Structure), and invisible wasted spend on cross-network (50/100 on Wasted Spend).
+**Drag Factors:** PMax asset poverty (42/100 on Ads & Assets), invisible wasted spend on cross-network (50/100 on Wasted Spend), and PMax brand cannibalization dragging structure down.
 
-### Aggregate Score: 54/100 (Grade D)
+### Aggregate Score: 55/100 (Grade D)
 
 ```
-Aggregate = Meta (52) × 68% + Google (58) × 32%
-         = 35.4 + 18.6 = 54.0
+Aggregate = Meta (52) × 68% + Google (61) × 32%
+         = 35.4 + 19.5 = 54.9 → 55
 ```
 
 ---
@@ -417,6 +415,7 @@ After implementing fixes, monitor these weekly:
 | Google ROAS | 2.11x | 2.8x | 3.5x+ |
 | Google CPA | £32.07 | £28 | £22 |
 | PMax Asset Strength | "No Asset" | "Good" | "Excellent" |
+| Search Impression Share | ~40% | 50% | 60%+ |
 | Learning Limited ad sets | Unknown | <30% | <15% |
 | MER (all platforms) | Unknown | 2.5x | 3.5x |
 | Blended CPA | Unknown | — | £25 |
