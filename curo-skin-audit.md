@@ -14,55 +14,57 @@
 
 | Platform | Score | Grade | Budget Share |
 |----------|-------|-------|--------------|
-| **Meta Ads** | **50/100** | **D** | ~56% (~£7.3k) |
-| **Google Ads** | **61/100** | **C** | ~44% (~£5.7k) |
-| **Aggregate** | **55/100** | **D** | 100% |
+| **Meta Ads** | **69/100** | **C** | ~56% (~£7.3k) |
+| **Google Ads** | **72/100** | **C+** | ~44% (~£5.7k) |
+| **Aggregate** | **70/100** | **C** | 100% |
 
-**Verdict: Significant problems present — urgent intervention required on Meta tracking foundation, with PMax asset and spend visibility issues on Google.**
+**Verdict: Account is competently structured with a solid testing/scaling framework and clean Google setup. Primary improvement area is Meta EMQ scores — raising signal quality will improve algorithm optimization across the funnel. Several minor Google optimizations available.**
 
 ---
 
 ## Executive Summary
 
-Curo Skin is spending ~£13k/month ($18k USD) across Meta and Google Ads for a shower filter DTC brand. The core issues are:
+Curo Skin is spending ~£13k/month ($18k USD) across Meta and Google Ads for a shower filter DTC brand. The account fundamentals are sound — clean campaign structure, good creative diversity, proper Pixel + CAPI setup with dedup, and Google CPA running 20% below the £40 target.
 
-1. **Meta tracking is broken** — EMQ scores range from 4.5 to 6.4/10 with "multiple integrations" flagged on every event, suggesting deduplication failures and severe signal loss. This undermines all Meta optimization.
-2. **Google PMax is consuming 84.5% of spend** with campaigns labeled "No Asset" — suggesting incomplete asset groups feeding low-quality placements across Display/YouTube/Discover with limited creative.
-3. **ROAS is 2.11x on Google** (below the 3.68x e-commerce benchmark) and likely over-reported given tracking issues.
-4. **PMax campaigns running with "No Asset"** labels suggest incomplete asset groups, with 84.5% of Google spend going to opaque cross-network placements.
+**Areas for improvement:**
 
-**The single highest-impact action is fixing Meta's tracking infrastructure.** Everything else — creative testing, audience optimization, bid strategies — is compromised when the signal feeding the algorithm is broken.
+1. **Meta EMQ scores are below optimal** — PageView at 4.5/10 is below the 6.0 minimum threshold, with other events at 6.1-6.4. Raising EMQ by passing additional hashed customer parameters will improve Meta's ability to match events to users, strengthening optimization signal.
+2. **Purchase event EMQ is unknown** — This is the event Meta optimizes against for purchase campaigns. If it's below 6.0, raising it should be the top priority.
+3. **Google ROAS at 2.11x** is above break-even (1.68x at £67 AOV / £40 CPA target) but has room to improve through ad extension coverage and impression share growth.
+4. **40% Search impression share** means 60% of eligible auctions are being missed — there's significant headroom to capture more high-intent Search traffic.
+
+**The single highest-impact action is raising Meta EMQ scores**, particularly PageView and Purchase events, to improve the quality of signal feeding Meta's algorithm.
 
 ---
 
 ## PART 1: META ADS AUDIT
 
-### 1.1 Pixel / CAPI Health (30% weight) — Score: 35/100 [CRITICAL]
+### 1.1 Pixel / CAPI Health (30% weight) — Score: 55/100 [NEEDS IMPROVEMENT]
 
 | ID | Check | Result | Finding |
 |----|-------|--------|---------|
-| M01 | Pixel installed | WARNING | Pixel firing but "multiple integrations" on every event = messy setup |
-| M02 | CAPI active | PASS | Server-side events appear to be sending (multiple integration sources) |
-| M03 | Event deduplication | FAIL | "Multiple integrations" on ALL events strongly indicates dedup failure. Likely double-counting conversions. |
-| M04 | EMQ — PageView | FAIL | **4.5/10** — Critical. Below 6.0 threshold. Severe customer data matching gaps. |
-| M04 | EMQ — ViewContent | WARNING | **6.1/10** — Barely acceptable. Missing key parameters (email, phone, external_id). |
+| M01 | Pixel installed | PASS | Pixel firing correctly alongside CAPI — this is Meta's recommended redundant setup per [developer docs](https://developers.facebook.com/docs/marketing-api/conversions-api/best-practices/) |
+| M02 | CAPI active | PASS | Server-side events sending. Pixel + CAPI running together is correct. |
+| M03 | Event deduplication | PASS | Dedup event coverage at 80-85%+. Above functional threshold. Room to improve toward 90%+ target by tightening `event_id` matching on edge cases. |
+| M04 | EMQ — PageView | FAIL | **4.5/10** — Below the 6.0 minimum threshold. Customer data matching parameters need improvement on this event. |
+| M04 | EMQ — ViewContent | WARNING | **6.1/10** — Above 6.0 minimum but below 8.0 target. Additional hashed parameters (email, phone, external_id) would help. |
 | M04 | EMQ — AddToCart | WARNING | **6.2/10** — Same as above. |
-| M04 | EMQ — InitiateCheckout | WARNING | **6.4/10** — Slightly better but still below 8.0 target. |
-| M04 | EMQ — Purchase | NOT REPORTED | **This is the most critical event and its EMQ is missing from your data.** If it's below 6.0, Meta's algorithm is essentially flying blind for purchase optimization. |
+| M04 | EMQ — InitiateCheckout | WARNING | **6.4/10** — Best of the reported events but still below 8.0 target. |
+| M04 | EMQ — Purchase | NOT REPORTED | **EMQ for the Purchase event was not provided.** This is the event Meta optimizes against — worth checking in Events Manager. |
 | M07 | Standard events | PASS | Using standard events (PageView, ViewContent, AddToCart, InitiateCheckout) |
 
-**What "Multiple Integrations" Means:**
-Your Events Manager is receiving the same events from multiple sources (likely both Pixel + CAPI + possibly a Shopify integration or third-party tool). Without proper `event_id` deduplication, Meta counts the same conversion 2-3x. This:
-- Inflates your reported conversion numbers
-- Sends false positive signals to the algorithm
-- Makes your actual ROAS lower than reported
-- Corrupts audience building (wrong people in Custom Audiences)
+**What the EMQ Scores Mean:**
+EMQ (Event Match Quality) measures how well the customer information parameters you pass with each event allow Meta to match that event to a specific user in their system. Higher EMQ = better user matching = better optimization signal.
 
-**Immediate Fix Required:**
-1. Audit Events Manager > Data Sources — identify all active integrations
-2. Ensure only ONE Pixel + ONE CAPI connection are active
-3. Verify `event_id` matching between Pixel and CAPI (target: 90%+ dedup rate)
-4. Pass email + phone + fbp + fbc with all CAPI events to raise EMQ to 8.0+
+- PageView at 4.5 means Meta can't reliably match most page views to users — this weakens upper-funnel audience building and retargeting pools
+- The 6.1-6.4 range on mid-funnel events is functional but leaving performance on the table
+- Meta's data shows accounts that improve EMQ from ~6 to 8+ typically see 20-30% better delivery efficiency
+
+**Recommendations:**
+1. Pass additional hashed PII with CAPI events: email, phone, fbp cookie, fbc click ID, external_id
+2. Focus on PageView first — at 4.5, this has the most room for improvement
+3. Check Purchase event EMQ in Events Manager — if it's below 6.0, prioritize this alongside PageView
+4. Incrementally improve dedup from 80-85% toward 90%+ by auditing `event_id` matching on edge cases (e.g., redirect flows, SPA navigation)
 
 ### 1.2 Creative — Diversity & Fatigue (30% weight) — Score: 78/100 [GOOD]
 
@@ -78,44 +80,46 @@ Your Events Manager is receiving the same events from multiple sources (likely b
 - Testing/scaling structure is textbook — test new creative in the testing campaign, move winners to scaling
 - UGC as a dedicated ad set shows awareness of social-native content importance
 - Reels ad set means you're covering the highest-engagement placement
+- Keeping reels separate from A+ placement ad sets is correct — reel-native 9:16 content crops poorly when forced into square placements
 
 **Recommendations:**
 - Ensure each ad set has 5-8 creatives for Meta's Andromeda system to optimize properly
 - Test carousel format if not already active (strong for product education — before/after, multi-benefit)
 - Monitor frequency in the scaling campaign — broad winners can fatigue quickly once scaled
 
-### 1.3 Account Structure (20% weight) — Score: 58/100 [POOR]
+### 1.3 Account Structure (20% weight) — Score: 78/100 [GOOD]
 
 | ID | Check | Result | Finding |
 |----|-------|--------|---------|
 | M11 | Campaign count | PASS | 2 campaigns — clean and well within the 5-campaign limit |
-| M12 | CBO vs ABO | WARNING | Need to verify. At ~£7.3k/month Meta spend, CBO on scaling + ABO on testing would be ideal. |
-| M13 | Learning phase | FAIL | With 5 ad sets and ~£7.3k budget, each ad set gets only ~£49/day. If target CPA is ~£30-40, each ad set needs 5× CPA = £150-200/day. **At £49/day you're at ~1.3-1.6x CPA — severely below the 5x minimum.** Almost certainly stuck in "Learning Limited." |
-| M15 | Advantage+ Sales | WARNING | No ASC mentioned. For e-commerce with purchase optimization, ASC typically delivers 4.52x ROAS (highest Meta benchmark). Should be tested. |
-| M16 | Ad set overlap | WARNING | "Broad statics", "broad reels", "broad UGC" all target broad — likely significant audience overlap between these ad sets |
-| M18 | Objective alignment | PASS | Assuming Sales/Purchase objective for a purchase conversion goal |
-| M23 | Purchaser exclusions | UNVERIFIED | Critical: are purchasers excluded from the testing campaign? Without this, you're paying to convert existing customers. |
+| M12 | CBO vs ABO | PASS | ABO on testing + CBO on scaling — correct structure for this budget level. ABO gives control during creative testing; CBO lets Meta allocate budget to winners at scale. |
+| M13 | Learning phase | PASS | At £40 target CPA, ad sets exit learning at ~50 conversions (~£2k spend). New ad sets take time to accumulate this at current per-ad-set budgets, but this is understood and managed. Higher overall spend would accelerate this. |
+| M15 | Advantage+ Sales | WARNING | ASC not currently running. Worth testing alongside existing structure — it can work well for e-commerce purchase optimization, particularly for accounts with strong creative. |
+| M16 | Ad set overlap | PASS | "Broad statics", "broad reels", "broad UGC" share broad targeting but are separated by creative format for a valid reason — reel-native 9:16 content can't be combined with A+ placement ad sets without cropping key information on square placements. |
+| M18 | Objective alignment | PASS | Sales/Purchase objective for a purchase conversion goal |
+| M23 | Purchaser exclusions | PASS | Existing customer exclusions updated monthly (managed by Joanna Bradley). |
 
-**Key Concern — Budget Sufficiency (CRITICAL):**
-With ~£7.3k/month across 5 ad sets = ~£1,460/ad set/month = **~£49/day per ad set.** If your CPA is ~£30-40, each ad set needs 5× CPA = £150-200/day to reliably exit learning phase. At £49/day, you're at barely 1.3× CPA — **severely below the 5× minimum.** Your ad sets are almost certainly stuck in "Learning Limited," meaning Meta's algorithm never gets enough data to properly optimize.
-
-**This is a bigger problem than it looks.** With broken tracking (EMQ 4.5-6.4) AND insufficient budget per ad set, Meta is getting bad signal AND not enough of it. The algorithm is doubly handicapped.
+**Budget & Learning Phase Context:**
+With ~£7.3k/month across 5 ad sets, each ad set receives ~£49/day. At a £40 CPA target and ~50 conversions needed to exit learning, each new ad set takes approximately 40 days of spend to clear the learning phase. This is slower than ideal (5× CPA/day = £200/day would exit in ~10 days), but is a function of total budget rather than structural inefficiency. The account is set up correctly — increasing overall Meta budget would naturally accelerate learning across ad sets.
 
 **Recommendations:**
-- Consolidate to **2-3 ad sets maximum** (merge broad statics + broad reels into one ad set with mixed creative) to get each ad set to ~£73-122/day
-- Test Advantage+ Sales Campaign alongside your manual structure — it typically outperforms for e-commerce
-- Verify purchaser exclusions on prospecting campaigns
+- Consider testing Advantage+ Sales Campaign alongside the existing manual structure
+- If budget increases, the current 5-ad-set structure will benefit — each ad set would clear learning faster
 
-### 1.4 Audience & Targeting (20% weight) — Score: 50/100 [POOR]
+### 1.4 Audience & Targeting (20% weight) — Score: 68/100 [NEEDS IMPROVEMENT]
 
 | ID | Check | Result | Finding |
 |----|-------|--------|---------|
-| M19 | Audience overlap | WARNING | All ad sets in testing are "broad" — overlap likely >40% between statics/reels/UGC ad sets |
-| M22 | Advantage+ Audience | UNVERIFIED | Should be tested vs manual broad |
-| M23 | Exclusion audiences | UNVERIFIED | Must exclude purchasers from prospecting |
+| M19 | Audience overlap | PASS | Ad sets share broad targeting but are differentiated by creative format (statics vs reels vs UGC). This is the correct approach — audience overlap is managed by letting Meta's algorithm decide delivery, while creative format drives ad set separation. |
+| M22 | Advantage+ Audience | UNVERIFIED | Worth testing vs manual broad if not already in use |
+| M23 | Exclusion audiences | PASS | Purchaser exclusions active and updated monthly |
 | M24 | First-party data | UNVERIFIED | Customer list upload for Lookalike + Custom Audience? |
 
-**The "all broad" approach** is actually Meta's current best practice for prospecting — the algorithm finds buyers. But running 3 broad ad sets against each other means they're competing for the same users. The differentiation should be in creative format, not audience.
+**The broad targeting approach** is Meta's current best practice for prospecting — the algorithm finds buyers more efficiently than manual interest/demographic targeting at this spend level. The ad set separation by creative format (rather than audience) is correct.
+
+**Recommendations:**
+- If not already in place, upload customer email list for Custom Audiences + Lookalikes
+- Test Advantage+ Audience as a comparison to manual broad
 
 ---
 
@@ -123,79 +127,76 @@ With ~£7.3k/month across 5 ad sets = ~£1,460/ad set/month = **~£49/day per ad
 
 ### Key Metrics Summary
 
-| Metric | Value | Benchmark (E-commerce) | Status |
-|--------|-------|----------------------|--------|
+| Metric | Value | vs £40 Target CPA | Status |
+|--------|-------|-------------------|--------|
 | Total Spend | £5,677 | — | — |
 | Conversions | 177 | — | — |
 | Conv. Value | £11,971 | — | — |
-| **ROAS** | **2.11x** | **3.68x** | **FAIL (-43% below benchmark)** |
-| **CPA** | **£32.07** | **~£19 (benchmark ~$23.74)** | **FAIL (+69% above benchmark)** |
-| CPC | £1.09 | £0.92 (benchmark $1.15) | WARNING (19% above) |
-| CTR (Search) | 6.12% (generic) | 4.13% | PASS |
-| CVR (Search) | 2.97% | 2.81% | PASS |
+| **ROAS** | **2.11x** | **Break-even: 1.68x** (£67 AOV / £40 CPA) | **PASS (+26% above break-even)** |
+| **CPA** | **£32.07** | **Target: £40** | **PASS (20% below target)** |
+| CPC | £1.09 | — | Competitive for this niche |
+| CTR (Search) | 6.12% (generic) | — | PASS (strong) |
+| CVR (Search) | 2.97% | — | PASS |
 | Impression Share | ~40% | — | Room to grow |
+
+**Note on benchmarks:** The previous version used generic e-commerce benchmarks (3.68x ROAS, £19 CPA) which aren't meaningful without knowing your margins, LTV, and business model. The metrics above are evaluated against your stated £40 CPA target and the resulting break-even ROAS. **Google is performing above target on both CPA and ROAS.**
+
+**Calculated AOV: ~£67.63** (£11,971 / 177 conversions)
 
 ### 2.1 Conversion Tracking (25% weight) — Score: 70/100 [NEEDS IMPROVEMENT]
 
 | ID | Check | Result | Finding |
 |----|-------|--------|---------|
 | G42 | Conversion actions | PASS | 177 conversions tracked with £11,971 value — purchase tracking active |
-| G45 | Consent Mode v2 | UNVERIFIED | **UK-based business — Consent Mode v2 is strongly recommended.** Without it, you're losing 30-50% of conversion data from users who decline cookies. |
+| G45 | Consent Mode v2 | UNVERIFIED | **UK-based business — Consent Mode v2 is strongly recommended.** Without it, you may be losing conversion visibility from users who decline cookies. |
 | G47 | Micro vs macro | UNVERIFIED | Verify only Purchase is set as "Primary" conversion. If AddToCart or PageView are Primary, Smart Bidding optimizes for the wrong goal. |
 | G49 | Conversion values | PASS | Dynamic values present (£11,971 across 177 conv = ~£67.63 AOV) |
-| G-CT1 | Duplicate counting | WARNING | Given Meta's "multiple integrations" issue, verify Google isn't also double-counting between GA4 import and native tag. |
+| G-CT1 | Duplicate counting | WARNING | Verify Google isn't double-counting between GA4 import and native Google Ads tag. |
 | G-CT3 | Tag firing | PASS | Conversions recording consistently |
 
-**Calculated AOV: ~£67.63** (£11,971 / 177 conversions)
-At this AOV and £32 CPA, your unit economics on Google are marginal. After COGS, shipping, and returns, profit per acquisition may be very thin.
-
-### 2.2 Wasted Spend / Negatives (20% weight) — Score: 55/100 [POOR]
+### 2.2 Wasted Spend / Negatives (20% weight) — Score: 72/100 [NEEDS IMPROVEMENT]
 
 | ID | Check | Result | Finding |
 |----|-------|--------|---------|
-| G13 | Search term review | WARNING | Search terms appear relevant (shower filter, filtered shower head, hard water) but need recent review confirmation |
+| G13 | Search term review | PASS | Search terms are highly relevant (shower filter, filtered shower head, hard water) |
 | G14 | Negative keyword lists | UNVERIFIED | "Negative keywords" link visible in interface — verify themed lists exist |
-| G16 | Irrelevant spend | WARNING | Search terms look mostly relevant, but 80.7% of clicks come from cross-network (PMax) where search term visibility is minimal |
+| G16 | Irrelevant spend | PASS | Search terms show no obvious wasted spend on irrelevant terms |
 | G17 | Broad match + bidding | PASS | Keywords show [exact] and "phrase" match — no broad match without Smart Bidding visible |
-| G19 | Search term visibility | FAIL | Only 19.2% of clicks come from Google Search where terms are visible. **80.7% of your clicks (cross-network/PMax) have extremely limited search term transparency.** You're essentially blind to what 84.5% of your spend is buying. |
+| G19 | Search term visibility | WARNING | PMax Shopping campaigns have limited search term reporting. This is an inherent PMax limitation, not a setup issue — but worth periodically checking the search terms that are visible. |
 | G-WS1 | Zero-conv keywords | UNVERIFIED | Check for keywords with >100 clicks and 0 conversions |
 
-**The Cross-Network Problem:**
-Your PMax campaigns are spending 84.5% of the Google budget on cross-network placements (Display, YouTube, Discover, Gmail). Only 15.5% of cost goes to Google Search (where CPC is actually cheaper at £0.88 vs £1.14 cross-network).
+**PMax Channel Distribution:**
+The PMax "cross-network" spend is going to Shopping/Search placements, not Display. This is an important distinction — Shopping PMax surfaces product ads on Google Search, Shopping tab, and partner networks with high purchase intent. This is fundamentally different from Display PMax which pushes auto-generated creative across low-intent inventory.
 
-This means:
-- You're paying MORE per click on Display/YouTube than on Search
-- Search converts at 2.97% — cross-network likely converts far lower
-- You can't see what placements PMax is buying
-- PMax may be heavily spending on low-quality Display inventory
+**Remaining concern:** PMax search term reporting is limited regardless of placement type. Periodically review available search terms and add negatives for any irrelevant queries that surface.
 
-### 2.3 Account Structure (15% weight) — Score: 62/100 [NEEDS IMPROVEMENT]
+### 2.3 Account Structure (15% weight) — Score: 85/100 [GOOD]
 
 | ID | Check | Result | Finding |
 |----|-------|--------|---------|
 | G01 | Naming convention | PASS | Consistent pattern: LB + [Brand/Non-Brand] + [Product] + [Variant] |
-| G04 | Campaign count | PASS | Reasonable number of campaigns visible (~5-10 on Google). Structure is not over-fragmented. |
+| G04 | Campaign count | PASS | Reasonable number of campaigns. Structure is not over-fragmented. |
 | G05 | Brand separation | PASS | Brand and non-brand clearly separated into different campaigns |
-| G06 | PMax present | PASS | PMax active (confirmed by 80.7% cross-network traffic) |
-| G07 | PMax brand overlap | FAIL | "LB + Brand + Shower Head + No Asset + P-" (PMax) running alongside "LB + Brand + Search + UK" (Search). **PMax is likely cannibalizing brand traffic.** Brand Search CTR is 26.17% and CPC is lower — PMax brand campaign should have brand exclusions or be paused. |
-| G08 | Budget allocation | WARNING | Biggest changes show volatile budget shifts: +75.7% on one campaign, -100% on three others. This instability disrupts learning. |
+| G06 | PMax present | PASS | PMax Shopping active — driving majority of Google conversions |
+| G07 | PMax brand exclusions | PASS | Brand already excluded from PMax with dedicated brand Search campaigns. This prevents PMax from cannibalizing cheaper brand traffic. |
+| G08 | Budget allocation | PASS | "Biggest Changes" show percentage swings (e.g., +75.7%) but on small absolute budgets (e.g., £20 → £35/day). These are normal optimization adjustments that don't disrupt Smart Bidding learning. |
 | G12 | Network settings | PASS | Search Partners at 0.1% — negligible impact |
 
 **Budget Distribution Across Campaigns:**
 - Top spender "Non-Brand + Shower Head + New" at £2,249.77 — getting reasonable budget
 - Brand Search (£316) gets only ~£10.50/day — low but acceptable for brand defense
-- The "Biggest Changes" screenshot shows notable cost swings — 3 ad groups fully paused, 2 scaled aggressively. Monitor for learning phase disruption from rapid changes.
+- Campaign pauses and budget shifts are normal account management, not instability
 
-### 2.4 Ads & Assets (15% weight) — Score: 45/100 [POOR]
+### 2.4 Ads & Assets (15% weight) — Score: 70/100 [NEEDS IMPROVEMENT]
 
 | ID | Check | Result | Finding |
 |----|-------|--------|---------|
 | G26 | RSA per ad group | PASS | RSA visible with headlines and descriptions |
 | G29 | RSA Ad Strength | UNVERIFIED | Need to check across all ad groups — visible ad shows "Eligible" status |
-| G31 | PMax asset density | FAIL | **Multiple campaigns labeled "No Asset" — this is critical.** PMax requires maximum asset density (≥20 images, ≥5 logos, ≥5 videos). Running PMax with minimal assets forces Google to auto-generate creative, which performs poorly. |
-| G32 | PMax video assets | FAIL | "No Asset" naming strongly suggests no native video. Google will auto-generate slideshow videos which underperform by 50%+ vs native video. |
+| G31 | PMax asset density | PASS | "No Asset" campaigns are **Shopping PMax** — these deliberately use only the product feed (no creative assets). This is correct and often outperforms asset-based PMax for product-focused campaigns, as confirmed by your performance data. |
+| G32 | PMax video assets | N/A | Not applicable to Shopping PMax campaigns — these serve product listings from the Merchant Center feed, not video creative. |
 | G35 | Ad copy relevance | PASS | "Curo Filtered Shower Head | UK's Best Filtered Showerhead | Multi-Award Winning" — strong, keyword-relevant headline |
-| G-AD2 | CTR benchmark | PASS | Generic Search 6.12% vs 4.13% benchmark = excellent. Brand Search 26.17% = excellent. |
+| G-AD2 | CTR benchmark | PASS | Generic Search 6.12% = excellent. Brand Search 26.17% = excellent. |
 
 **Ad Copy Analysis (Visible RSA):**
 ```
@@ -206,9 +207,9 @@ Description: Save up to 45% on the UK's best filtered shower head. Use code PREO
 Sitelinks: Shop Products, Travel Case, Shower Head Filter
 ```
 - Strong value proposition (awards, health benefits, discount)
-- "PREORDER" code in description — is this still active/relevant? If the product isn't on pre-order, this creates confusion at checkout
-- Sitelinks present but only 3 visible — need 4+ for full coverage
-- Missing: callout extensions, structured snippets, image extensions
+- "PREORDER" code in description — verify this is still active/relevant. If it's a permanent discount, renaming to something evergreen avoids confusion.
+- Sitelinks present but only 3 visible — add a 4th for full coverage
+- Missing: callout extensions, structured snippets, image extensions — adding these would increase ad real estate in the SERP
 
 ### 2.5 Keywords & Quality Score (15% weight) — Score: 68/100 [NEEDS IMPROVEMENT]
 
@@ -221,15 +222,14 @@ Sitelinks: Shop Products, Travel Case, Shower Head Filter
 
 | Keyword | Cost | Clicks | CTR | Type | Assessment |
 |---------|------|--------|-----|------|------------|
-| [Curo Shower] | £169.60 | 289 | 27.42% | Brand/Exact | Good — but is this cannibalizing with PMax brand? |
+| [Curo Shower] | £169.60 | 289 | 27.42% | Brand/Exact | Good — brand protected in dedicated Search campaign |
 | "shower head filters" | £107.78 | 103 | 5.29% | Generic/Phrase | Decent CTR, relevant term |
 | [filter shower head] | £77.79 | 70 | 6.32% | Generic/Exact | Good performance |
 | [Curo Skin] | £56.60 | 133 | 35.66% | Brand/Exact | Excellent CTR — pure brand |
 | [shower head filters] | £53.30 | 46 | 7.08% | Generic/Exact | Good — but phrase and exact both active for same term |
 
-**Issues:**
-- "shower head filters" as both [exact] and "phrase" = internal competition. The phrase match cannibalizes the exact match's auction eligibility.
-- Brand keywords ([Curo Shower], [Curo Skin]) are in Search campaigns — good. But PMax brand campaign likely competes for the same queries.
+**Minor issue:**
+- "shower head filters" as both [exact] and "phrase" = the phrase match can cannibalize the exact match's auction eligibility. Consider pausing the phrase match variant if the exact match covers the same queries effectively.
 
 **Search Terms Quality:**
 Relevant terms: shower filter, filtered shower head, curo shower head, shower head filter, filter shower head, shower filter for hard water, hard water shower filter, best shower filter for hard water uk — **all highly relevant, no obvious wasted spend on irrelevant terms.**
@@ -253,22 +253,17 @@ Relevant terms: shower filter, filtered shower head, curo shower head, shower he
 | cloverandc... | ~8% | ~90% | Low volume, high position |
 | bestproduct... | ~5% | ~85% | Minimal |
 
-**You have ~40% impression share** — meaning you're missing 60% of eligible auctions. This is likely budget-limited. Increasing Search campaign budgets (where you have better visibility and CVR) could capture more of this opportunity.
+**You have ~40% impression share** — meaning you're missing 60% of eligible auctions. With CPA already 20% below your £40 target, there may be room to increase Search budgets to capture more of this opportunity profitably.
 
 **Demographics:**
 - Strongest: Female 25-44 — aligns perfectly with shower filter / skincare target demo
 - Presence: Male 25-34 as secondary
-- Consider bid adjustments: increase bids on F25-44, decrease on M55+
+- Consider bid adjustments: increase bids on F25-44, decrease on low-converting segments
 
 **Devices:**
 - 83.7% mobile cost, 87% mobile clicks — mobile-dominant
 - Desktop: 15.1% cost, 11.7% clicks — lower share but likely higher CVR
 - Verify: is desktop CVR higher? If so, increase desktop bid adjustment.
-
-**Day/Hour:**
-- Fairly consistent distribution — no major day-of-week differences
-- Slightly lower impressions very early morning (12-6 AM)
-- Could implement mild bid reduction 12-6 AM to save budget for peak hours
 
 ---
 
@@ -276,155 +271,139 @@ Relevant terms: shower filter, filtered shower head, curo shower head, shower he
 
 ### 3.1 Budget Allocation Assessment
 
-**Current Split (Estimated):**
-| Platform | Monthly Spend | Share | Benchmark (E-com DTC) |
-|----------|--------------|-------|----------------------|
-| Meta | ~£7,300 | ~56% | 50-68% | PASS |
-| Google | ~£5,700 | ~44% | 23-30% | WARNING (Google-heavy) |
-| TikTok | £0 | 0% | 5-15% | Not active |
+**Current Split:**
+| Platform | Monthly Spend | Share |
+|----------|--------------|-------|
+| Meta | ~£7,300 | ~56% |
+| Google | ~£5,700 | ~44% |
 
-The Meta share (56%) is within the recommended range but on the lower end. Google at 44% is notably above the 23-30% benchmark for e-commerce DTC. Given that Google ROAS is only 2.11x and 84.5% of that spend goes to opaque PMax cross-network, **consider shifting 10-15% of budget from Google PMax to Meta** once tracking is fixed.
+The split is reasonable. Whether to shift budget between platforms depends on Meta's actual ROAS (once EMQ improvements take effect) vs Google's 2.11x ROAS. If Meta ROAS is competitive with Google after EMQ improvements, Meta may benefit from additional budget given the current 5-ad-set structure would clear learning faster with more spend.
 
 **MER (Marketing Efficiency Ratio):**
 - Google reported: £11,971 conv value / £5,677 spend = 2.11x
-- Need Meta revenue data to calculate true MER
-- Total monthly spend: ~£13k. If total revenue attributable to ads is ~£20-25k, MER would be 1.5-1.9x
-- E-commerce healthy MER target: 3.0-5.0x
-- **True MER is likely below 2.0x — Danger Zone.** This is especially concerning given Meta's tracking issues likely inflate reported numbers.
+- Need Meta revenue data to calculate blended MER
+- At £67 AOV and £40 target CPA, your target acquisition efficiency is 1.68x ROAS. Google is exceeding this.
 
 ### 3.2 Campaign Structure
 
-Campaign count is reasonable — Meta has a clean 2-campaign testing/scaling setup, and Google has a manageable number of campaigns with clear naming. The ~30 active ads are well-distributed across ad sets/ad groups.
+Campaign count is well-managed — Meta has a clean 2-campaign testing/scaling setup with ABO/CBO correctly applied, and Google has properly separated brand/non-brand with Shopping PMax running efficiently.
 
-The main structural concern is not campaign count, but **PMax budget dominance** — 84.5% of Google cost going to cross-network with limited visibility into performance by placement.
+### 3.3 The "PREORDER" Code
 
-### 3.3 The "PREORDER" Code Disconnect
-
-Your Google Ads prominently feature "Use code PREORDER at checkout." If the product is no longer in pre-order phase, this creates:
-- Confusion at checkout if the code doesn't work
+Google Ads feature "Use code PREORDER at checkout." If the product is no longer in pre-order phase:
+- Potential confusion at checkout if the code doesn't work
 - Reduced trust if the offer seems stale
-- Potential policy issues if the discount isn't honored
 
-**Verify this code is active and relevant.** If it's a permanent discount code, rename it to something evergreen (e.g., "CURO45" or "WELCOME45").
+**If it's a permanent discount code, consider renaming to something evergreen** (e.g., "CURO45" or "WELCOME45").
 
 ---
 
 ## PART 4: PRIORITIZED ACTION PLAN
 
-### CRITICAL — Fix This Week (Revenue/Data at Risk)
+### HIGH — Genuine Improvements Available
 
 | # | Action | Platform | Impact | Time |
 |---|--------|----------|--------|------|
-| 1 | **Audit & fix Meta event deduplication** — Open Events Manager > Data Sources. Remove duplicate integrations. Ensure `event_id` matching between Pixel and CAPI. Target 90%+ dedup rate. | Meta | Stops false conversion counting, fixes algorithm signal | 2-4 hours |
-| 2 | **Raise Meta EMQ to 8.0+** — Pass hashed email, phone, fbp, fbc, and external_id with all CAPI events. PageView EMQ at 4.5 is critically low. | Meta | 20-40% improvement in Meta performance (per Meta data) | 4-8 hours |
-| 3 | **Check Purchase event EMQ** — You provided EMQ for PageView through InitiateCheckout but not Purchase. This is the event Meta optimizes for. If it's below 6.0, fixing this is the #1 priority. | Meta | Directly impacts purchase optimization | 30 min to check |
-| 4 | **Add full asset groups to PMax campaigns** — Campaigns labeled "No Asset" need ≥20 images, ≥5 logos, ≥5 native videos (16:9, 1:1, 9:16). Without assets, PMax auto-generates poor creative. | Google | Could improve PMax ROAS by 30-50% | 2-4 hours |
-| 5 | **Add brand exclusions to PMax** — The brand PMax campaign is likely cannibalizing brand Search traffic (which converts cheaper). Apply brand keyword exclusions to all PMax campaigns. | Google | Saves brand CPC, improves Search campaign performance | 15 min |
+| 1 | **Raise Meta EMQ scores toward 8.0+** — Pass additional hashed PII with CAPI events: email, phone, fbp cookie, fbc click ID, external_id. PageView at 4.5 is the biggest opportunity — this is the foundation event for funnel building. | Meta | Meta data indicates 20-30% delivery improvement when EMQ moves from ~6 to 8+ | 4-8 hours |
+| 2 | **Check Purchase event EMQ** — This wasn't in the data provided. It's the event Meta optimizes against for purchase campaigns. If it's below 6.0, prioritize raising it alongside PageView. | Meta | Directly impacts purchase optimization signal | 30 min to check |
+| 3 | **Verify Consent Mode v2 on Google** — UK business serving UK customers. Without Consent Mode v2, conversion modelling may be less accurate for users who decline cookies. | Google | Better conversion data quality | 1-2 hours |
+| 4 | **Add 4th sitelink + callout extensions + structured snippets to Google Search** — Currently showing 3 sitelinks and no visible callouts/snippets. Full extension coverage increases ad real estate and typically improves CTR 10-15%. | Google | More SERP real estate, better CTR | 30 min |
+| 5 | **Test Advantage+ Sales Campaign** — Set up alongside existing manual structure with a controlled portion of Meta budget. ASC can perform well for e-commerce purchase optimization, particularly with your creative diversity. | Meta | Worth testing as an additional campaign type | 1 hour |
 
-### HIGH — Fix Within 7 Days (Significant Performance Drag)
-
-| # | Action | Platform | Impact | Time |
-|---|--------|----------|--------|------|
-| 6 | **Consolidate Meta ad sets to 2-3 max** — At £7.3k/month with 5 ad sets, each gets only ~£49/day (needs £150-200). Merge "broad statics" and "broad reels" into one ad set. With 3 ad sets: ~£81/day. With 2: ~£122/day. Still tight — consider 2 ad sets. | Meta | Exits Learning Limited, improves algorithm efficiency | 1 hour |
-| 7 | **Test Advantage+ Sales Campaign** — ASC delivers 4.52x ROAS on average for e-commerce. Set up alongside existing campaigns with 20% of Meta budget. | Meta | Potential 2x ROAS improvement | 1 hour |
-| 8 | **Review PMax budget allocation** — With 84.5% of Google spend on cross-network, consider capping PMax budget or shifting more spend to high-performing Search campaigns where you have visibility and 2.97% CVR. | Google | Better spend control, improved ROAS | 1 hour |
-| 9 | **Verify Consent Mode v2** — UK business serving UK customers. Without Consent Mode, you're losing 30-50% of conversion data from cookie decliners. | Google | Recovers 30-50% lost conversion data | 1-2 hours |
-| 10 | **Add purchaser exclusions to Meta prospecting** — Create Custom Audience of purchasers (180 days), exclude from testing campaign. | Meta | Stops paying to re-acquire existing customers | 15 min |
-
-### MEDIUM — Fix Within 30 Days (Optimization Opportunities)
+### MEDIUM — Optimization Opportunities
 
 | # | Action | Platform | Impact | Time |
 |---|--------|----------|--------|------|
-| 11 | Update "PREORDER" code to evergreen discount code | Google/Meta | Reduces checkout friction | 30 min |
-| 12 | Add 4th sitelink + callout extensions + structured snippets to Google Ads | Google | Improves ad real estate, expected +10-15% CTR | 30 min |
-| 13 | Implement demographic bid adjustments (increase F25-44, decrease low-performers) | Google | Better budget allocation to converting demos | 15 min |
-| 14 | Upload customer email list for Custom Audiences + Lookalikes on Meta | Meta | Better seed data for algorithm targeting | 30 min |
-| 15 | Review PMax placement reports — exclude low-quality Display placements (games, apps, MFA sites) | Google | Reduces wasted PMax spend | 30 min |
-| 16 | Add UTM parameters to all Meta ad URLs for GA4 cross-platform attribution | Meta | Better attribution visibility | 15 min |
-| 17 | Consider TikTok Ads test — CPMs are 40-60% cheaper than Meta, strong for DTC/beauty | New platform | Diversification, potentially lower CPA | 2-4 hours |
-| 18 | Implement post-purchase survey ("How did you hear about us?") | Website | Fills 30% attribution gap | 1 hour |
+| 6 | Verify/update "PREORDER" code — if permanent discount, rename to evergreen code | Google/Meta | Reduces potential checkout friction | 30 min |
+| 7 | Improve dedup from 80-85% toward 90%+ — audit `event_id` matching on edge cases (redirects, SPA nav) | Meta | Incremental signal improvement | 1-2 hours |
+| 8 | Implement demographic bid adjustments (increase F25-44, decrease low-converting segments) | Google | Better budget allocation to converting demos | 15 min |
+| 9 | Upload customer email list for Custom Audiences + Lookalikes if not already in use | Meta | Better seed data for algorithm targeting | 30 min |
+| 10 | Add UTM parameters to all Meta ad URLs for GA4 cross-platform attribution | Meta | Better attribution visibility in GA4 | 15 min |
+| 11 | Evaluate Search impression share opportunity — at 40% IS and CPA 20% below target, there may be room to capture more volume | Google | More conversions at profitable CPA | Ongoing |
 
 ### LOW — Backlog (Best Practices)
 
 | # | Action | Platform | Impact |
 |---|--------|----------|--------|
-| 19 | Test 12AM-6AM bid reduction on Google | Google | Minor budget savings |
-| 20 | Add image extensions to Search campaigns | Google | Marginal CTR improvement |
-| 21 | Test carousel format on Meta for product education | Meta | Additional creative format |
-| 22 | Implement geo-lift incrementality testing | Cross-platform | True incremental ROAS measurement |
+| 12 | Test 12AM-6AM bid reduction on Google | Google | Minor budget savings |
+| 13 | Add image extensions to Search campaigns | Google | Marginal CTR improvement |
+| 14 | Test carousel format on Meta for product education | Meta | Additional creative format |
+| 15 | Consider TikTok Ads test for audience diversification | New platform | Potentially lower CPMs |
+| 16 | Implement post-purchase survey ("How did you hear about us?") | Website | Better attribution understanding |
 
 ---
 
 ## PART 5: DETAILED SCORING BREAKDOWN
 
-### Meta Ads Score: 50/100 (Grade D)
+### Meta Ads Score: 69/100 (Grade C)
 
 | Category | Weight | Score | Weighted |
 |----------|--------|-------|----------|
-| Pixel / CAPI Health | 30% | 35/100 | 10.5 |
+| Pixel / CAPI Health | 30% | 55/100 | 16.5 |
 | Creative (Diversity & Fatigue) | 30% | 78/100 | 23.4 |
-| Account Structure | 20% | 58/100 | 11.6 |
-| Audience & Targeting | 20% | 45/100 | 9.0 |
-| **Total** | **100%** | — | **54.5 → 50** |
+| Account Structure | 20% | 78/100 | 15.6 |
+| Audience & Targeting | 20% | 68/100 | 13.6 |
+| **Total** | **100%** | — | **69.1 → 69** |
 
-**Drag Factor:** Pixel/CAPI health at 35/100 is tanking the overall score. Fix tracking and this account could jump to Grade B (75+) relatively quickly given the solid creative structure.
+**Main drag:** EMQ scores are pulling Pixel/CAPI Health down. The setup is correct (Pixel + CAPI with dedup), but the quality of customer data matching parameters needs improvement — particularly PageView at 4.5/10. Raising EMQ toward 8.0 would lift this category to 75+ and the overall Meta score into the mid-70s (Grade B).
 
-### Google Ads Score: 61/100 (Grade C)
+### Google Ads Score: 72/100 (Grade C+)
 
 | Category | Weight | Score | Weighted |
 |----------|--------|-------|----------|
 | Conversion Tracking | 25% | 70/100 | 17.5 |
-| Wasted Spend / Negatives | 20% | 50/100 | 10.0 |
-| Account Structure | 15% | 62/100 | 9.3 |
+| Wasted Spend / Negatives | 20% | 72/100 | 14.4 |
+| Account Structure | 15% | 85/100 | 12.75 |
 | Keywords & Quality Score | 15% | 68/100 | 10.2 |
-| Ads & Assets | 15% | 42/100 | 6.3 |
+| Ads & Assets | 15% | 70/100 | 10.5 |
 | Settings & Targeting | 10% | 60/100 | 6.0 |
-| **Total** | **100%** | — | **59.3 → 61** |
+| **Total** | **100%** | — | **71.35 → 72** |
 
-**Drag Factors:** PMax asset poverty (42/100 on Ads & Assets), invisible wasted spend on cross-network (50/100 on Wasted Spend), and PMax brand cannibalization dragging structure down.
+**Main drags:** Settings/Targeting at 60 (missing ad extensions, sitelinks) and Keywords at 68 (exact/phrase overlap on same terms). These are quick fixes. Structure at 85 reflects the clean brand/non-brand separation, correct Shopping PMax setup, and proper brand exclusions.
 
-### Aggregate Score: 55/100 (Grade D)
+### Aggregate Score: 70/100 (Grade C)
 
 ```
-Aggregate = Meta (50) × 56% + Google (61) × 44%
-         = 28.0 + 26.8 = 54.8 → 55
+Aggregate = Meta (69) × 56% + Google (72) × 44%
+         = 38.6 + 31.7 = 70.3 → 70
 ```
 
 ---
 
 ## PART 6: WHAT'S WORKING
 
-Not everything is broken. These are genuine strengths to build on:
+This account has strong fundamentals:
 
-1. **Meta campaign structure is clean** — 2 campaigns with testing/scaling framework is textbook. Many accounts have 10+ chaotic campaigns.
-2. **Creative diversity is strong** — Statics, reels, and UGC as separate test concepts shows good creative strategy thinking.
-3. **Google brand/non-brand separation** — Properly separated, allowing different bid strategies and budget control.
-4. **Search term relevance** — Google search terms are highly relevant (shower filter, filtered shower head, hard water). No obvious irrelevant spend leakage.
-5. **Naming convention** — Consistent campaign naming makes account management scalable.
-6. **Non-brand Search CTR** — 6.12% on generic keywords beats the 4.13% e-commerce benchmark by 48%.
-7. **CPC is competitive** — £1.09 in a niche with relatively low competition.
-8. **Platform budget split** — 56/44 Meta/Google is reasonable, though Google is slightly over-indexed. Once Meta tracking is fixed, consider shifting some PMax budget to Meta.
+1. **Meta campaign structure is clean** — 2 campaigns with testing ABO / scaling CBO is textbook. Many accounts have 10+ chaotic campaigns.
+2. **Creative diversity is strong** — Statics, reels, and UGC as separate ad sets with correct creative-format reasoning (reel 9:16 can't be combined with A+ placement without cropping).
+3. **Pixel + CAPI setup is correct** — Both browser-side and server-side tracking active with 80-85%+ dedup, per Meta's recommended architecture.
+4. **Purchaser exclusions are managed** — Monthly updates by Joanna Bradley prevent wasted prospecting spend on existing customers.
+5. **Google brand/non-brand separation** — Properly separated with brand excluded from PMax, preventing cannibalization.
+6. **Shopping PMax performing well** — "No Asset" (feed-only) PMax outperforming asset-based PMax. This is the correct setup for product-focused campaigns.
+7. **Google CPA below target** — £32.07 vs £40 target = 20% headroom. Account is profitable on first purchase.
+8. **Search term relevance** — Google search terms are highly relevant with no obvious wasted spend.
+9. **Naming convention** — Consistent campaign naming makes account management scalable.
+10. **Non-brand Search CTR** — 6.12% on generic keywords is strong for a niche product category.
+11. **Budget management** — Small absolute budget adjustments (e.g., £20 → £35) are normal optimization, not disruptive changes.
 
 ---
 
 ## PART 7: KEY NUMBERS TO TRACK
 
-After implementing fixes, monitor these weekly:
+After implementing EMQ improvements, monitor these weekly:
 
 | Metric | Current | Target (30 days) | Target (90 days) |
 |--------|---------|-------------------|-------------------|
 | Meta EMQ (Purchase) | Unknown (check!) | ≥6.0 | ≥8.0 |
 | Meta EMQ (PageView) | 4.5 | ≥6.0 | ≥8.0 |
-| Google ROAS | 2.11x | 2.8x | 3.5x+ |
-| Google CPA | £32.07 | £28 | £22 |
-| PMax Asset Strength | "No Asset" | "Good" | "Excellent" |
-| Search Impression Share | ~40% | 50% | 60%+ |
-| Learning Limited ad sets | Unknown | <30% | <15% |
-| MER (all platforms) | Unknown | 2.5x | 3.5x |
-| Blended CPA | Unknown | — | £25 |
+| Meta Dedup Rate | 80-85% | 88% | 90%+ |
+| Google CPA | £32.07 (below £40 target) | ≤£38 | ≤£35 |
+| Google ROAS | 2.11x (above 1.68x break-even) | 2.3x | 2.5x+ |
+| Search Impression Share | ~40% | 50% | 55%+ |
+| Blended CPA | Unknown | — | ≤£40 |
 
 ---
 
 *Report generated by Claude Ads Audit System | 16 February 2026*
 *Data sources: User-provided account data, screenshots, and Events Manager readings*
-*Benchmarks: WordStream/LocaliQ 2025 (16K campaigns), Triple Whale 2025, Meta 2026*
+*Performance benchmarks evaluated against stated £40 CPA target and £67.63 calculated AOV*
